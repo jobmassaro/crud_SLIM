@@ -1,7 +1,7 @@
 (function () {
     var person = {};
     var app = angular.module('controller', []);
-    app.controller('personCtrl', function ($scope, $state, personSrv) {
+    app.controller('personCtrl', function ($scope, $state, personSrv,personSrv1){
 
         function getAll() {
             $scope.datas = personSrv.query();
@@ -11,14 +11,19 @@
             person = {};
             $state.go('form');
         };
+
         $scope.edit = function (data) {
             person = data;
-            $state.go('form');
+            $state.go('edit');
+            
         };
-        $scope.remove = function (id){
+
+        $scope.remove = function (data)
+        {
             var r = confirm("Are you sure delete this person ? ");
             if (r === true) {
-                personSrv.delete({id: id}, function () {
+
+               personSrv1.deleteUser(data.id).success(function(data){
                     getAll();
                     alert('Delete Data Success');
                 });
@@ -27,22 +32,29 @@
             }
         };
     });
-    app.controller('formCtrl', function ($scope, $state, personSrv) {
+    app.controller('formCtrl', function ($scope, $state, personSrv, personSrv1) {
         $scope.post = person;
+
         $scope.back = function () {
             $state.go('person');
         };
-        $scope.save = function () {
+        $scope.save = function (data) {
+            
+                console.log("data =>:" + data.name);
             if ($scope.post.id === undefined) {
-                personSrv.save($scope.post, function () {
-                    $scope.post = '';
+
+                 personSrv1.updateUser(data).success(function(data){
                     alert('Save Data Success');
-                    $state.go('person');
-                });
+                    $state.go('person');    
+                    return data;
+                 });
             } else {
-                personSrv.update($scope.post, function () {
-                    alert('Update Data Success');
-                });
+
+                 personSrv1.updateUser(data).success(function(data){
+                   alert('Update Data Success');
+                   $state.go('person');    
+                 });
+
             }
         };
     });

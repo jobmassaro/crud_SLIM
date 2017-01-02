@@ -15,6 +15,10 @@
             url: '/form',
             templateUrl: 'views/form.html',
             controller: 'formCtrl'
+        }).state('edit', {
+            url: '/update',
+            templateUrl: 'views/update.html',
+            controller: 'formCtrl'
         });
     });
 })();
